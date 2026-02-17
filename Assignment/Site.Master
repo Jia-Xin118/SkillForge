@@ -1,0 +1,168 @@
+﻿<%@ Master Language="C#" AutoEventWireup="true" CodeBehind="Site.master.cs" Inherits="Assignment.SiteMaster" %>
+
+<!DOCTYPE html>
+
+<html lang="en">
+<head runat="server">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title><%: Page.Title %> - SkillForge</title>
+
+    <asp:PlaceHolder runat="server">
+        <%: Scripts.Render("~/bundles/modernizr") %>
+    </asp:PlaceHolder>
+
+    <webopt:bundlereference runat="server" path="~/Content/css" />
+    <link href="~/favicon.ico" rel="shortcut icon" type="image/x-icon" />
+    
+    <%-- Custom styles for dropdown --%>
+    <style>
+        .dropdown-menu-custom {
+            display: none;
+            position: absolute;
+            background-color: #343a40;
+            min-width: 200px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1000;
+            border-radius: 4px;
+            margin-top: 5px;
+        }
+        
+        .dropdown:hover .dropdown-menu-custom {
+            display: block;
+        }
+        
+        .dropdown-item-custom {
+            color: white;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+            transition: background-color 0.3s;
+        }
+        
+        .dropdown-item-custom:hover {
+            background-color: #555;
+            color: white;
+            text-decoration: none;
+        }
+        
+        .dropdown-toggle-custom {
+            color: rgba(255,255,255,.55);
+            text-decoration: none;
+            padding: 8px;
+            display: inline-block;
+        }
+        
+        .dropdown-toggle-custom:hover {
+            color: rgba(255,255,255,.75);
+        }
+    </style>
+
+</head>
+<body>
+    <form runat="server">
+        <asp:ScriptManager runat="server">
+            <Scripts>
+                <asp:ScriptReference Name="MsAjaxBundle" />
+                <asp:ScriptReference Name="jquery" />
+                <asp:ScriptReference Name="WebForms.js" Assembly="System.Web" Path="~/Scripts/WebForms/WebForms.js" />
+                <asp:ScriptReference Name="WebUIValidation.js" Assembly="System.Web" Path="~/Scripts/WebForms/WebUIValidation.js" />
+                <asp:ScriptReference Name="MenuStandards.js" Assembly="System.Web" Path="~/Scripts/WebForms/MenuStandards.js" />
+                <asp:ScriptReference Name="GridView.js" Assembly="System.Web" Path="~/Scripts/WebForms/GridView.js" />
+                <asp:ScriptReference Name="DetailsView.js" Assembly="System.Web" Path="~/Scripts/WebForms/DetailsView.js" />
+                <asp:ScriptReference Name="TreeView.js" Assembly="System.Web" Path="~/Scripts/WebForms/TreeView.js" />
+                <asp:ScriptReference Name="WebParts.js" Assembly="System.Web" Path="~/Scripts/WebParts/WebParts.js" />
+                <asp:ScriptReference Name="Focus.js" Assembly="System.Web" Path="~/Scripts/WebForms/Focus.js" />
+                <asp:ScriptReference Name="WebFormsBundle" />
+            </Scripts>
+        </asp:ScriptManager>
+
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark bg-dark">
+            <div class="container">
+                <a class="navbar-brand" runat="server" href="~/">SkillForge</a>
+                <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" title="Toggle navigation" aria-controls="navbarSupportedContent"
+                    aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse d-sm-inline-flex justify-content-between">
+                    <ul class="navbar-nav flex-grow-1">
+                        
+                        <%-- CATEGORIES DROPDOWN --%>
+                        <li class="nav-item dropdown" style="position: relative;">
+                            <a class="dropdown-toggle-custom" href="#">Categories ▼</a>
+                            <div class="dropdown-menu-custom">
+                                <asp:Repeater ID="RepeaterCategories" runat="server">
+                                    <ItemTemplate>
+                                        <a class="dropdown-item-custom" 
+                                           href="Modules.aspx?cat=<%# Server.UrlEncode(Eval("Category").ToString()) %>">
+                                            <%# Eval("Category") %>
+                                        </a>
+                                    </ItemTemplate>
+                                </asp:Repeater>
+                                <div style="border-top: 1px solid #555; margin: 5px 0;"></div>
+                                <a class="dropdown-item-custom" href="Modules.aspx">All Modules</a>
+                            </div>
+                        </li>
+                        
+                        <li class="nav-item"><a class="nav-link" runat="server" href="~/About.aspx">About</a></li>
+                        <li class="nav-item"><a class="nav-link" runat="server" href="~/Contact.aspx">Contact</a></li>
+                        
+                        <% if (Session["UserID"] == null) { %>
+                            <%-- INTEGRATED LOGIN IN NAVIGATION --%>
+                            <li class="nav-item" style="display:flex; align-items:center; margin-left:10px;">
+                                <asp:TextBox ID="txtNavEmail" runat="server" placeholder="Email" 
+                                    style="padding:6px; margin:0 5px; border-radius:4px; border:none; width:130px; font-size:13px;"></asp:TextBox>
+                                <asp:TextBox ID="txtNavPassword" runat="server" TextMode="Password" placeholder="Password" 
+                                    style="padding:6px; margin:0 5px; border-radius:4px; border:none; width:130px; font-size:13px;"></asp:TextBox>
+                                <asp:Button ID="btnNavLogin" runat="server" Text="Login" OnClick="BtnNavLogin_Click" 
+                                    style="padding:6px 15px; margin:0 5px; border-radius:4px; border:none; background-color:#c9a227; color:#1e3a5f; font-weight:bold; cursor:pointer; font-size:13px;" />
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" runat="server" href="~/Register.aspx">Register</a>
+                            </li>
+                        <% } else { %>
+                            <%-- ADMIN FIRST (for admin users) --%>
+                            <% if (Session["Role"] != null && Session["Role"].ToString() == "Admin") { %>
+                                <li class="nav-item"><a class="nav-link" runat="server" href="~/AdminModules.aspx">Manage Modules</a></li>
+                            <% } %>
+                            
+                            <%-- THEN PROFILE --%>
+                            <li class="nav-item"><a class="nav-link" runat="server" href="~/Profile.aspx">My Profile</a></li>
+                            
+                            <li class="nav-item"><a class="nav-link" runat="server" href="~/Logout.aspx">Logout</a></li>
+                        <% } %>
+                    </ul>
+                    
+                    <%-- Progress Bar for Logged-in Users --%>
+                    <% if (Session["UserID"] != null) { %>
+                        <div class="d-flex align-items-center text-white ms-3">
+                            <span style="margin-right:8px; font-size:11px;">
+                                LEVEL <asp:Label ID="lblLevel" runat="server" Text="1"></asp:Label>
+                            </span>
+                            <div style="width:80px; background-color:#555; height:6px; border-radius:3px; margin-right:8px;">
+                                <div id="progressBarNav" runat="server" 
+                                     style="background-color:#4CAF50; height:6px; border-radius:3px; width:0%">
+                                </div>
+                            </div>
+                            <span style="font-size:10px;">
+                                <asp:Label ID="lblProgressText" runat="server" Text="0/3 XP"></asp:Label>
+                            </span>
+                        </div>
+                    <% } %>
+                </div>
+            </div>
+        </nav>
+        <div class="container body-content">
+            <asp:ContentPlaceHolder ID="MainContent" runat="server">
+            </asp:ContentPlaceHolder>
+            <hr />
+            <footer>
+                <p>&copy; <%: DateTime.Now.Year %> - SkillForge | Group Assignment - APU</p>
+            </footer>
+        </div>
+    </form>
+    <asp:PlaceHolder runat="server">
+        <%: Scripts.Render("~/Scripts/bootstrap.js") %>
+    </asp:PlaceHolder>
+</body>
+</html>
