@@ -13,7 +13,7 @@ namespace Assignment
         {
             Session.Clear();
             Session.Abandon();
-            Response.Redirect("~/Login.aspx");
+            Response.Redirect("~/Default.aspx");
         }
     }
 }

@@ -15,10 +15,12 @@ namespace Assignment
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            if (!IsPostBack && Session["UserID"] != null)
+            if (!IsPostBack)
             {
+                // 1. Always load categories for everyone
                 LoadCategories();
 
+                // 2. Only load progress if the user is logged in
                 if (Session["UserID"] != null)
                 {
                     LoadProgress();
@@ -82,24 +84,23 @@ namespace Assignment
                 conn.Open();
                 int xp = (int)cmd.ExecuteScalar();
 
-                // Milestone system
                 int level = xp + 1;
                 int nextMilestone = ((xp / 5) + 1) * 5;
                 int progressInMilestone = xp % 5;
                 int progressPercent = (progressInMilestone * 20);
 
-                // BADGE SYSTEM (Backend logic)
                 string badge = GetBadge(xp);
 
-                // Find controls
-                if (FindControl("lblLevel") is System.Web.UI.WebControls.Label lblLevel)
+                var lblLevel = FindControl("lblLevel") as System.Web.UI.WebControls.Label;
+                if (lblLevel != null)
                     lblLevel.Text = level.ToString();
 
-                if (FindControl("progressBarNav") is System.Web.UI.HtmlControls.HtmlGenericControl progressBarNav)
+                var progressBarNav = FindControl("progressBarNav") as System.Web.UI.HtmlControls.HtmlGenericControl;
+                if (progressBarNav != null)
                     progressBarNav.Style["width"] = progressPercent + "%";
 
-                // Show badge in progress text
-                if (FindControl("lblProgressText") is System.Web.UI.WebControls.Label lblProgressText)
+                var lblProgressText = FindControl("lblProgressText") as System.Web.UI.WebControls.Label;
+                if (lblProgressText != null)
                     lblProgressText.Text = xp + "/" + nextMilestone + " XP " + badge;
             }
         }

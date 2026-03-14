@@ -69,22 +69,22 @@ namespace Assignment
         protected global::System.Web.UI.WebControls.Label lblDate;
 
         /// <summary>
-        /// btnDownload control.
+        /// BtnDownload control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnDownload;
+        protected global::System.Web.UI.WebControls.Button BtnDownload;
 
         /// <summary>
-        /// btnLinkedIn control.
+        /// BtnLinkedIn control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnLinkedIn;
+        protected global::System.Web.UI.WebControls.Button BtnLinkedIn;
 
         /// <summary>
         /// pnlError control.

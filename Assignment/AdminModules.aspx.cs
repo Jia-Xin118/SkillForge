@@ -19,7 +19,7 @@ namespace Assignment
             // Check if admin
             if (Session["Role"] == null || Session["Role"].ToString() != "Admin")
             {
-                Response.Redirect("~/Login.aspx");
+                Response.Redirect("~/Default.aspx");
             }
 
             if (!IsPostBack)

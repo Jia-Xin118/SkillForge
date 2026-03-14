@@ -42,13 +42,13 @@ namespace Assignment
         protected global::System.Web.UI.WebControls.TextBox txtNavPassword;
 
         /// <summary>
-        /// btnNavLogin control.
+        /// BtnNavLogin control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnNavLogin;
+        protected global::System.Web.UI.WebControls.Button BtnNavLogin;
 
         /// <summary>
         /// lblLevel control.

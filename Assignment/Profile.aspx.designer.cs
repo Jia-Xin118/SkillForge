@@ -15,6 +15,15 @@ namespace Assignment
     {
 
         /// <summary>
+        /// lblInitials control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblInitials;
+
+        /// <summary>
         /// lblName control.
         /// </summary>
         /// <remarks>
@@ -42,15 +51,6 @@ namespace Assignment
         protected global::System.Web.UI.WebControls.Label lblRole;
 
         /// <summary>
-        /// lblCompleted control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblCompleted;
-
-        /// <summary>
         /// lblTotal control.
         /// </summary>
         /// <remarks>
@@ -60,6 +60,51 @@ namespace Assignment
         protected global::System.Web.UI.WebControls.Label lblTotal;
 
         /// <summary>
+        /// lblCompleted control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblCompleted;
+
+        /// <summary>
+        /// lblCertificates control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblCertificates;
+
+        /// <summary>
+        /// lblLevel control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblLevel;
+
+        /// <summary>
+        /// lblCurrentLevel control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblCurrentLevel;
+
+        /// <summary>
+        /// lblProgressText control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblProgressText;
+
+        /// <summary>
         /// pnlProgress control.
         /// </summary>
         /// <remarks>
@@ -67,6 +112,15 @@ namespace Assignment
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.HtmlControls.HtmlGenericControl pnlProgress;
+
+        /// <summary>
+        /// pnlBadges control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Panel pnlBadges;
 
         /// <summary>
         /// RepeaterBadges control.

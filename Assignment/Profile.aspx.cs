@@ -18,7 +18,7 @@ namespace Assignment
         {
             if (Session["UserID"] == null)
             {
-                Response.Redirect("Login.aspx");
+                Response.Redirect("Default.aspx");
             }
 
             if (!IsPostBack)
@@ -54,22 +54,20 @@ namespace Assignment
         {
             using (SqlConnection conn = new SqlConnection(connStr))
             {
+                conn.Open();
+
                 // Total modules
                 string sqlTotal = "SELECT COUNT(*) FROM Modules";
                 SqlCommand cmdTotal = new SqlCommand(sqlTotal, conn);
-                conn.Open();
                 int total = (int)cmdTotal.ExecuteScalar();
                 lblTotal.Text = total.ToString();
-                conn.Close();
 
                 // Completed modules (XP)
                 string sqlCompleted = "SELECT COUNT(*) FROM UserProgress WHERE UserID = @UserID AND IsCompleted = 1";
                 SqlCommand cmdCompleted = new SqlCommand(sqlCompleted, conn);
                 cmdCompleted.Parameters.AddWithValue("@UserID", Session["UserID"]);
-                conn.Open();
                 int xp = (int)cmdCompleted.ExecuteScalar();
                 lblCompleted.Text = xp.ToString();
-                conn.Close();
 
                 // MILESTONE SYSTEM
                 int level = xp + 1;
@@ -137,11 +135,12 @@ namespace Assignment
         {
             using (SqlConnection conn = new SqlConnection(connStr))
             {
-                string sql = @"SELECT m.Title, m.Category, up.CompletionDate 
-                    FROM Modules m
-                    INNER JOIN UserProgress up ON m.ModuleID = up.ModuleID
-                    WHERE up.UserID = @UserID AND up.IsCompleted = 1
-                    ORDER BY up.CompletionDate DESC";
+                // ADDED m.ModuleID to the SELECT
+                string sql = @"SELECT m.ModuleID, m.Title, m.Category, up.CompletionDate 
+            FROM Modules m
+            INNER JOIN UserProgress up ON m.ModuleID = up.ModuleID
+            WHERE up.UserID = @UserID AND up.IsCompleted = 1
+            ORDER BY up.CompletionDate DESC";
 
                 SqlCommand cmd = new SqlCommand(sql, conn);
                 cmd.Parameters.AddWithValue("@UserID", Session["UserID"]);
@@ -155,12 +154,31 @@ namespace Assignment
                     GridViewCompleted.DataSource = dt;
                     GridViewCompleted.DataBind();
                     GridViewCompleted.Visible = true;
+                    lblNoModules.Visible = false; // Hide the "no modules" message
                 }
                 else
                 {
+                    GridViewCompleted.Visible = false;
                     lblNoModules.Visible = true;
                 }
             }
         }
+
+        protected string GetBadgeClass(object colorObj)
+        {
+            string color = colorObj?.ToString() ?? "#FFD700";
+
+            // Map colors to CSS classes
+            switch (color.ToUpper())
+            {
+                case "#FFD700": return "badge-gold";
+                case "#C0C0C0": return "badge-silver";
+                case "#CD7F32": return "badge-bronze";
+                case "#4CAF50": return "badge-green";
+                case "#2196F3": return "badge-blue";
+                default: return "badge-gold";
+            }
+        }
+
     }
 }

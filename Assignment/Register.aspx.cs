@@ -10,30 +10,76 @@ namespace Assignment
 {
     public partial class Register : System.Web.UI.Page
     {
+
+        private readonly string connStr = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=C:\Users\jikk1\source\repos\Assignment\Assignment\App_Data\SkillForgeDB.mdf;Integrated Security=True";
+
         protected void Page_Load(object sender, EventArgs e)
         {
 
         }
 
-        protected void btnRegister_Click(object sender, EventArgs e)
+        protected void BtnRegister_Click(object sender, EventArgs e)
         {
-            string connStr = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=C:\Users\jikk1\source\repos\Assignment\Assignment\App_Data\SkillForgeDB.mdf;Integrated Security=True";
+            string fullName = txtFullName.Text.Trim();
+            string email = txtEmail.Text.Trim();
+            string password = txtPassword.Text;
 
-            using (SqlConnection conn = new SqlConnection(connStr))
+            // Validation
+            if (string.IsNullOrEmpty(fullName) || string.IsNullOrEmpty(email) || string.IsNullOrEmpty(password))
             {
-                string sql = "INSERT INTO Users (FullName, Email, Password, Role) VALUES (@Name, @Email, @Password, 'Registered')";
-                SqlCommand cmd = new SqlCommand(sql, conn);
-                cmd.Parameters.AddWithValue("@Name", txtName.Text);
-                cmd.Parameters.AddWithValue("@Email", txtEmail.Text);
-                cmd.Parameters.AddWithValue("@Password", txtPassword.Text);
+                lblMessage.Text = "Please fill in all fields.";
+                lblMessage.ForeColor = System.Drawing.Color.Red;
+                return;
+            }
 
-                conn.Open();
-                cmd.ExecuteNonQuery();
+            if (password.Length < 8)
+            {
+                lblMessage.Text = "Password must be at least 8 characters.";
+                lblMessage.ForeColor = System.Drawing.Color.Red;
+                return;
+            }
 
-                lblMessage.ForeColor = System.Drawing.Color.Green;
-                lblMessage.Text = "Registration successful! <a href='Login.aspx'>Login here</a>";
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(connStr))
+                {
+                    // Check if email exists
+                    string checkQuery = "SELECT COUNT(*) FROM Users WHERE Email = @Email";
+                    SqlCommand checkCmd = new SqlCommand(checkQuery, conn);
+                    checkCmd.Parameters.AddWithValue("@Email", email);
+                    conn.Open();
+
+                    int exists = (int)checkCmd.ExecuteScalar();
+                    if (exists > 0)
+                    {
+                        lblMessage.Text = "Email already registered.";
+                        lblMessage.ForeColor = System.Drawing.Color.Red;
+                        return;
+                    }
+
+                    // Insert new user
+                    string insertQuery = @"INSERT INTO Users (FullName, Email, Password, Role) 
+                                         VALUES (@FullName, @Email, @Password, 'User')";
+                    SqlCommand insertCmd = new SqlCommand(insertQuery, conn);
+                    insertCmd.Parameters.AddWithValue("@FullName", fullName);
+                    insertCmd.Parameters.AddWithValue("@Email", email);
+                    insertCmd.Parameters.AddWithValue("@Password", password); // TODO: Hash this!
+                    insertCmd.ExecuteNonQuery();
+
+                    lblMessage.Text = "✓ Registration successful! Please login.";
+                    lblMessage.Style["color"] = "#4CAF50";
+                    lblMessage.Style["background"] = "rgba(76, 175, 80, 0.1)";
+                    lblMessage.Style["border"] = "1px solid #4CAF50";
+                }
+            }
+            catch (Exception ex)
+            {
+                lblMessage.Text = "✗ Error: " + ex.Message;
+                lblMessage.Style["color"] = "#f44336";
+                lblMessage.Style["background"] = "rgba(244, 67, 54, 0.1)";
+                lblMessage.Style["border"] = "1px solid #f44336";
             }
         }
-    }
 
+    }
 }

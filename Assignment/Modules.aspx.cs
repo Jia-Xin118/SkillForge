@@ -22,10 +22,11 @@ namespace Assignment
                 Response.Write("<div style='text-align:center; padding:100px; font-family:Arial;'>");
                 Response.Write("<h1 style='color:#d32f2f;'>🔒 Access Restricted</h1>");
                 Response.Write("<p style='font-size:18px; margin:20px 0;'>You must login or register to view learning modules.</p>");
-                Response.Write("<a href='Login.aspx' style='background-color:#1976d2; color:white; padding:12px 30px; text-decoration:none; border-radius:5px; margin:10px; display:inline-block;'>Login</a>");
-                Response.Write("<a href='Register.aspx' style='background-color:#388e3c; color:white; padding:12px 30px; text-decoration:none; border-radius:5px; margin:10px; display:inline-block;'>Register</a>");
+                // CHANGED: Removed Login.aspx link, added Register.aspx only
+                Response.Write("<a href='Register.aspx' style='background-color:#388e3c; color:white; padding:12px 30px; text-decoration:none; border-radius:5px; margin:10px; display:inline-block;'>Create Account</a>");
+                Response.Write("<p style='color:#666; margin-top:20px;'>Already have an account? Use the login form in the navigation bar above ↑</p>");
                 Response.Write("</div>");
-                Response.End(); // Stop here - don't show the rest of the page
+                Response.End();
                 return;
             }
 

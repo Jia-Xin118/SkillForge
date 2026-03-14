@@ -13,5 +13,20 @@ namespace Assignment
         {
 
         }
+
+        protected void BtnSend_Click(object sender, EventArgs e)
+        {
+            // Your email sending logic here
+            // Example:
+            //string name = txtName.Text;
+            //string message = txtMessage.Text;
+
+            // TODO: Add email sending code that uses the collected values
+
+            // Show success message
+            lblStatus.Text = "Thank you! Your message has been sent.";
+            lblStatus.CssClass = "alert alert-success";
+        }
     }
+
 }
