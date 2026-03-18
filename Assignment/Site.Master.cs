@@ -34,7 +34,11 @@ namespace Assignment
         {
             using (SqlConnection conn = new SqlConnection(connStr))
             {
-                string sql = "SELECT UserID, Role FROM Users WHERE Email=@Email AND Password=@Password";
+                // Check if user exists AND is verified (OTP is NULL)
+                string sql = @"SELECT UserID, Role FROM Users 
+                       WHERE Email=@Email AND Password=@Password 
+                       AND OTP IS NULL";  // OTP must be NULL (verified)
+
                 SqlCommand cmd = new SqlCommand(sql, conn);
                 cmd.Parameters.AddWithValue("@Email", txtNavEmail.Text);
                 cmd.Parameters.AddWithValue("@Password", txtNavPassword.Text);
@@ -50,11 +54,31 @@ namespace Assignment
                 }
                 else
                 {
-                    // Login failed - show error
-                    ScriptManager.RegisterStartupScript(this, this.GetType(), "alert",
-                        "alert('Invalid email or password');", true);
+                    reader.Close();
+
+                    // Check if email/password is correct but not verified
+                    string checkSql = "SELECT COUNT(*) FROM Users WHERE Email=@Email AND Password=@Password";
+                    SqlCommand checkCmd = new SqlCommand(checkSql, conn);
+                    checkCmd.Parameters.AddWithValue("@Email", txtNavEmail.Text);
+                    checkCmd.Parameters.AddWithValue("@Password", txtNavPassword.Text);
+
+                    int count = (int)checkCmd.ExecuteScalar();
+
+                    if (count > 0)
+                    {
+                        // Email/password correct but not verified
+                        ScriptManager.RegisterStartupScript(this, this.GetType(), "alert",
+                            "alert('Please verify your email first. Check your inbox for OTP.');", true);
+                    }
+                    else
+                    {
+                        // Wrong email/password
+                        ScriptManager.RegisterStartupScript(this, this.GetType(), "alert",
+                            "alert('Invalid email or password');", true);
+                    }
                 }
             }
+
         }
 
         // Load categories from database

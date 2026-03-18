@@ -173,6 +173,7 @@
     <Content Include="Scripts\WebForms\WebParts.js" />
     <Content Include="Scripts\WebForms\WebUIValidation.js" />
     <Content Include="Site.Master" />
+    <Content Include="VerifyOTP.aspx" />
     <Content Include="Web.config" />
     <Content Include="Bundle.config" />
   </ItemGroup>
@@ -273,6 +274,13 @@
     </Compile>
     <Compile Include="Site.Master.designer.cs">
       <DependentUpon>Site.Master</DependentUpon>
+    </Compile>
+    <Compile Include="VerifyOTP.aspx.cs">
+      <DependentUpon>VerifyOTP.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="VerifyOTP.aspx.designer.cs">
+      <DependentUpon>VerifyOTP.aspx</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup />

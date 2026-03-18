@@ -352,4 +352,106 @@ AutoEventWireup="true" CodeBehind="Default.aspx.cs" Inherits="Assignment.Default
             </div>
         </div>
     </div>
+
+        <!-- CHATBOT - Only shows when user is NOT logged in -->
+    <% if (Session["UserID"] == null) { %>
+
+    <!-- Chat Button -->
+    <div id="chatButton" onclick="toggleChat()" 
+         style="position:fixed; bottom:20px; right:20px; background:#a51c30; color:white; width:60px; height:60px; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:24px; box-shadow:0 4px 15px rgba(165,28,48,0.3); z-index:1000;">
+        💬
+    </div>
+
+    <!-- Chat Box -->
+    <div id="chatBox" style="display:none; position:fixed; bottom:90px; right:20px; width:320px; background:#2d2d2d; border-radius:12px; padding:20px; box-shadow:0 10px 30px rgba(0,0,0,0.3); border:1px solid #444; z-index:1000;">
+        
+        <div style="display:flex; align-items:center; gap:10px; margin-bottom:15px; padding-bottom:10px; border-bottom:1px solid #444;">
+            <div style="width:40px; height:40px; background:#a51c30; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:20px;">
+                🤖
+            </div>
+            <div>
+                <div style="font-weight:bold; color:#fff;">SkillForge Assistant</div>
+                <div style="font-size:12px; color:#888;">Online • Ask me anything!</div>
+            </div>
+            <div onclick="toggleChat()" style="margin-left:auto; cursor:pointer; color:#888; font-size:20px;">&times;</div>
+        </div>
+
+        <div id="chatMessages" style="height:250px; overflow-y:auto; background:#1a1a1a; padding:15px; border-radius:8px; margin-bottom:15px; color:#fff; font-size:14px;">
+            <div style="margin-bottom:10px;">
+                <span style="background:#a51c30; padding:5px 10px; border-radius:15px; display:inline-block;">👋 Hi! How can I help you today?</span>
+            </div>
+        </div>
+
+        <div style="display:flex; gap:10px;">
+            <input type="text" id="userInput" placeholder="Type your message..." 
+                   style="flex:1; padding:12px; background:#1a1a1a; border:1px solid #444; border-radius:8px; color:#fff; font-size:14px;"
+                   onkeypress="if(event.keyCode==13) sendMessage()" />
+            <button onclick="sendMessage()" 
+                    style="padding:12px 20px; background:#a51c30; color:#fff; border:none; border-radius:8px; cursor:pointer; font-weight:600;">
+                Send
+            </button>
+        </div>
+    </div>
+
+    <script>
+    function toggleChat() {
+        let box = document.getElementById("chatBox");
+        let btn = document.getElementById("chatButton");
+        if (box.style.display === "none" || box.style.display === "") {
+            box.style.display = "block";
+            btn.style.display = "none";
+        } else {
+            box.style.display = "none";
+            btn.style.display = "flex";
+        }
+    }
+
+    function sendMessage() {
+        let input = document.getElementById("userInput");
+        let message = input.value.trim();
+        let chat = document.getElementById("chatMessages");
+
+        if (message === "") return;
+
+        // Add user message
+        chat.innerHTML += `<div style="margin:10px 0; text-align:right;"><span style="background:#a51c30; padding:8px 15px; border-radius:18px; display:inline-block; max-width:80%;">${message}</span></div>`;
+
+        // Get bot reply
+        let reply = getBotReply(message.toLowerCase());
+
+        // Add bot reply with delay
+        setTimeout(() => {
+            chat.innerHTML += `<div style="margin:10px 0;"><span style="background:#1e1e1e; padding:8px 15px; border-radius:18px; display:inline-block; max-width:80%;">${reply}</span></div>`;
+            chat.scrollTop = chat.scrollHeight;
+        }, 500);
+
+        input.value = "";
+        chat.scrollTop = chat.scrollHeight;
+    }
+
+    function getBotReply(msg) {
+        if (msg.includes("course") || msg.includes("learn")) {
+            return "We offer courses in Leadership, Finance, and Communication! Browse our modules to get started.";
+        }
+        if (msg.includes("register") || msg.includes("sign up")) {
+            return "Click the 'Register' button in the top right to create your free account!";
+        }
+        if (msg.includes("certificate")) {
+            return "Complete a module and pass the quiz (score 50%+) to earn your certificate!";
+        }
+        if (msg.includes("hello") || msg.includes("hi")) {
+            return "Hello! 👋 How can I assist you with SkillForge today?";
+        }
+        if (msg.includes("price") || msg.includes("cost") || msg.includes("free")) {
+            return "SkillForge is completely free! Start learning today.";
+        }
+        if (msg.includes("login") || msg.includes("sign in")) {
+            return "Use the login form in the navigation bar to access your account.";
+        }
+        return "I'm here to help! You can ask me about courses, registration, certificates, or anything about SkillForge!";
+    }
+    </script>
+
+    <% } %>
+
 </asp:Content>

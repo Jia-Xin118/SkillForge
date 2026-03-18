@@ -1,17 +1,39 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+using System.Net;
+using System.Net.Mail;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Data.SqlClient;
+using System.Configuration;
 
 namespace Assignment
 {
     public partial class Register : System.Web.UI.Page
     {
+        // Use Web.config connection string
+        private readonly string connStr = ConfigurationManager.ConnectionStrings["SkillForgeDB"].ConnectionString;
 
-        private readonly string connStr = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=C:\Users\jikk1\source\repos\Assignment\Assignment\App_Data\SkillForgeDB.mdf;Integrated Security=True";
+        // ✅ OTP EMAIL FUNCTION - ADD THIS WHOLE FUNCTION
+        private void SendOTPEmail(string email, string otp)
+        {
+            try
+            {
+                MailMessage msg = new MailMessage();
+                msg.From = new MailAddress("kritichew118@gmail.com", "SkillForge");
+                msg.To.Add(email);
+                msg.Subject = "SkillForge OTP Verification";
+                msg.Body = $"Your OTP is: {otp}\n\nThis OTP will expire in 5 minutes.";
+
+                SmtpClient client = new SmtpClient("smtp.gmail.com", 587);
+                client.EnableSsl = true;
+                client.Credentials = new NetworkCredential("kritichew118@gmail.com", "xjft lyyy mmeu oajo"); // Your app password (no spaces)
+                client.Send(msg);
+            }
+            catch (Exception ex)
+            {
+                lblMessage.Text = "Email failed: " + ex.Message;
+            }
+        }
 
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -57,29 +79,43 @@ namespace Assignment
                         return;
                     }
 
-                    // Insert new user
+                    // Insert user
                     string insertQuery = @"INSERT INTO Users (FullName, Email, Password, Role) 
-                                         VALUES (@FullName, @Email, @Password, 'User')";
+                                           VALUES (@FullName, @Email, @Password, 'User')";
                     SqlCommand insertCmd = new SqlCommand(insertQuery, conn);
                     insertCmd.Parameters.AddWithValue("@FullName", fullName);
                     insertCmd.Parameters.AddWithValue("@Email", email);
-                    insertCmd.Parameters.AddWithValue("@Password", password); // TODO: Hash this!
+                    insertCmd.Parameters.AddWithValue("@Password", password);
                     insertCmd.ExecuteNonQuery();
 
-                    lblMessage.Text = "✓ Registration successful! Please login.";
-                    lblMessage.Style["color"] = "#4CAF50";
-                    lblMessage.Style["background"] = "rgba(76, 175, 80, 0.1)";
-                    lblMessage.Style["border"] = "1px solid #4CAF50";
+                    // ✅ GENERATE OTP
+                    Random rand = new Random();
+                    string otp = rand.Next(100000, 999999).ToString();
+                    DateTime expiry = DateTime.Now.AddMinutes(5);
+
+                    // ✅ SAVE OTP
+                    string updateQuery = "UPDATE Users SET OTP=@OTP, OTPExpiry=@Expiry WHERE Email=@Email";
+                    SqlCommand updateCmd = new SqlCommand(updateQuery, conn);
+                    updateCmd.Parameters.AddWithValue("@OTP", otp);
+                    updateCmd.Parameters.AddWithValue("@Expiry", expiry);
+                    updateCmd.Parameters.AddWithValue("@Email", email);
+                    updateCmd.ExecuteNonQuery();
+
+                    // ✅ SEND EMAIL
+                    SendOTPEmail(email, otp);
+
+                    // ✅ STORE EMAIL FOR NEXT PAGE
+                    Session["Email"] = email;
+
+                    // ✅ REDIRECT TO OTP PAGE
+                    Response.Redirect("VerifyOTP.aspx");
                 }
             }
             catch (Exception ex)
             {
                 lblMessage.Text = "✗ Error: " + ex.Message;
-                lblMessage.Style["color"] = "#f44336";
-                lblMessage.Style["background"] = "rgba(244, 67, 54, 0.1)";
-                lblMessage.Style["border"] = "1px solid #f44336";
+                lblMessage.ForeColor = System.Drawing.Color.Red;
             }
         }
-
     }
 }
